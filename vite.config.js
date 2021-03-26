@@ -12,9 +12,13 @@ export default defineConfig({
     __QUASAR_SSR_CLIENT__: false,
     __QUASAR_SSR_PWA__: false
   },
-  resolve: {
-    alias: {
-      'q-plugin': 'quasar/src/vue-plugin.js'
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          quasar: ['quasar']
+        }
+      }
     }
   },
   plugins: [
