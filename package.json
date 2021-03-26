@@ -1,0 +1,23 @@
+{
+  "name": "vite-quasar",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.10.0",
+    "quasar": "^2.0.0-beta.11",
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.1.5",
+    "@vue/compiler-sfc": "^3.0.5",
+    "eslint": "^7.22.0",
+    "eslint-plugin-vue": "^7.8.0",
+    "sass": "^1.32.8",
+    "vite": "^2.1.3",
+    "vite-plugin-components": "^0.8.3"
+  }
+}
