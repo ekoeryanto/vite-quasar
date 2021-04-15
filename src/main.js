@@ -1,17 +1,16 @@
 import { createApp } from 'vue'
-import Quasar from 'quasar/src/vue-plugin'
-import iconSet from 'quasar/icon-set/svg-mdi-v5'
+import { createQuasar } from './quasar'
+import iconSet from 'quasar/icon-set/svg-material-icons-outlined'
 import lang from 'quasar/lang/id'
 import App from './App.vue'
+import '@quasar/extras/roboto-font/roboto-font.css'
+import './quasar/core.sass'
 
-/**
- * @type {import('quasar').QuasarPluginOptions}
- */
-const qOpts = {
+const quasar = createQuasar({
   iconSet,
   lang
-}
+})
 
 createApp(App)
-  .use(Quasar, qOpts)
+  .use(quasar)
   .mount('#app')
