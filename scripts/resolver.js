@@ -3,17 +3,20 @@ import { resolve } from "path";
 import importMap from 'quasar/dist/transforms/import-map.json'
 
 export default name => {
-  const path = 'quasar/'+importMap[name]
-  let sideEffects = path.replace(/\.js$/, '.sass')
-
-  if (!existsSync(resolve('node_modules', sideEffects))) {
-    sideEffects = undefined
+  const importName = importMap[name]
+  if (!importName) {
+    return
   }
 
-  if(path) {
-    return {
-      path,
-      sideEffects
-    }
+  const script = `quasar/${importName}`
+  let style = script.replace(/\.js$/, '.sass')
+
+  if (!existsSync(resolve('node_modules', style))) {
+    style = undefined
+  }
+
+  return {
+    path: script,
+    sideEffects: style
   }
 }
