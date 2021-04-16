@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.10.0",
+    "@vueuse/head": "^0.5.1",
     "quasar": "^2.0.0-beta.11",
-    "vue": "^3.0.5"
+    "vue": "^3.0.5",
+    "vue-router": "^4.0.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.1.5",

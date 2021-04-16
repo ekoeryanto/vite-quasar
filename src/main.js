@@ -1,16 +1,22 @@
 import { createApp } from 'vue'
 import { createQuasar } from './quasar'
+import createRouter from './router'
 import iconSet from 'quasar/icon-set/svg-material-icons-outlined'
 import lang from 'quasar/lang/id'
 import App from './App.vue'
 import '@quasar/extras/roboto-font/roboto-font.css'
-import './quasar/core.sass'
 
 const quasar = createQuasar({
   iconSet,
   lang
 })
 
-createApp(App)
+const router = createRouter()
+
+const app = createApp(App)
+  app.use(router)
   .use(quasar)
-  .mount('#app')
+
+router.isReady().then(() => {
+  app.mount('#app')
+})
