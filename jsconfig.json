@@ -9,7 +9,7 @@
     },
     "types": [
       "quasar",
-      "vite/client",
+      "vite/client"
     ]
   }
 }

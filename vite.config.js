@@ -4,12 +4,13 @@ import ViteComponents from 'vite-plugin-components'
 import {resolve} from 'path'
 import { Quasar } from 'quasar';
 import resolveQuasar from './scripts/resolver'
+import { compilerOptions } from './jsconfig.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': [resolve(__dirname, './src')],
     }
   },
   css: {

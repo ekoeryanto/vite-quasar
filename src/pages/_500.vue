@@ -1,0 +1,3 @@
+<template>
+  <error-container />
+</template>

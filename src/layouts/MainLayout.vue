@@ -41,9 +41,23 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
-      <router-view />
-    </q-page-container>
+    <router-view v-slot="{ Component }">
+      <Suspense>
+        <template #fallback>
+          <q-inner-loading showing>
+            <q-spinner-puff
+              size="120px"
+              color="primary"
+            />
+          </q-inner-loading>
+        </template>
+        <template #default>
+          <q-page-container>
+            <component :is="Component" />
+          </q-page-container>
+        </template>
+      </Suspense>
+    </router-view>
   </q-layout>
 </template>
 
