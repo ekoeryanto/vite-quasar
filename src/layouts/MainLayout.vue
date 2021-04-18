@@ -1,43 +1,102 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+  <q-layout view="hHh Lpr lFf">
+    <q-header
+      elevated
+      :class="darkStyle"
+    >
+      <q-toolbar style="padding: 0.75rem 0.35rem">
         <q-btn
           flat
           dense
           round
           :icon="icons.menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="handleMenu"
         />
 
         <q-toolbar-title>
-          Quasar App
+          Quasar Vite
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn
+          dense
+          round
+          flat
+          :icon="icons.more"
+          aria-label="Alternative Menu"
+        >
+          <q-menu
+            ref="rmenu"
+            :offset="[-16, 0]"
+          >
+            <q-list>
+              <template
+                v-for="menu of menus"
+                :key="menu.label"
+              >
+                <q-item
+                  clickable
+                  :to="menu.to"
+                  @click="menu.handler"
+                >
+                  <q-item-section v-text="menu.label" />
+
+                  <q-item-section
+                    v-if="menu.icon"
+                    avatar
+                  >
+                    <q-icon :name="menu.icon" />
+                  </q-item-section>
+                </q-item>
+
+                <q-separator
+                  v-if="menu.separator"
+                  :key="`sep-${menu.label}`"
+                />
+              </template>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+    <q-drawer
+      v-model="leftDrawer"
+      :mini="miniDrawer"
+      show-if-above
+      side="left"
+      :bordered="!dark"
+    >
+      <!-- drawer content -->
+      <q-list>
+        <template
+          v-for="(nav, i) of navs"
+          :key="i"
+        >
+          <q-separator
+            v-if="nav.separator"
+          />
+          <q-item
+            :to="nav.to"
+            :exact="nav.exact"
+          >
+            <q-item-section
+              v-if="nav.icon"
+              avatar
+            >
+              <q-icon :name="nav.icon" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label v-text="nav.label" />
+              <q-item-label
+                v-if="nav.caption"
+                caption
+                v-text="nav.caption"
+              />
+            </q-item-section>
+          </q-item>
+        </template>
       </q-list>
     </q-drawer>
 
@@ -62,71 +121,90 @@
 </template>
 
 <script>
-import { outlinedChat, outlinedCode, outlinedFavoriteBorder, outlinedMenu, outlinedPublic, outlinedRecordVoiceOver, outlinedRssFeed, outlinedSchool } from '@quasar/extras/material-icons-outlined';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
+import { mapActions, mapMutations } from 'vuex'
+import {
+  outlinedMenu,
+  outlinedDarkMode,
+  outlinedLightMode,
+  outlinedMoreVert,
+  outlinedDashboard,
+  outlinedInfo,
+} from '@quasar/extras/material-icons-outlined';
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: outlinedSchool,
-    link: 'https://quasar.dev',
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: outlinedCode,
-    link: 'https://github.com/quasarframework',
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: outlinedChat,
-    link: 'https://chat.quasar.dev',
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: outlinedRecordVoiceOver,
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: outlinedRssFeed,
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: outlinedPublic,
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: outlinedFavoriteBorder,
-    link: 'https://awesome.quasar.dev',
-  },
+const navs = [
+  { label: 'Dashboard', icon: outlinedDashboard, to: '/', exact: true },
+  { label: 'About', icon: outlinedInfo, to: '/about' },
 ];
 
 export default defineComponent({
   name: 'MainLayout',
-
   setup() {
-    const leftDrawerOpen = ref(false);
-    const icons = {
-      menu: outlinedMenu
-    }
+    const icons = Object.freeze({
+      menu: outlinedMenu,
+      more: outlinedMoreVert,
+    });
+
     return {
       icons,
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer() {
-        leftDrawerOpen.value = !leftDrawerOpen.value;
-      },
-    };
+      navs
+    }
   },
+  computed: {
+    dark: {
+      get() {
+        return this.$store.state.layout.dark
+      },
+      set(v) {
+        this.setDark(v)
+      }
+    },
+    leftDrawer: {
+      get() {
+        return this.$store.state.layout.leftDrawer
+      },
+      set(v) {
+        this.setLeftDrawer(v)
+      }
+    },
+    miniDrawer: {
+      get() {
+        return this.$store.state.layout.miniDrawer
+      },
+      set(v) {
+        this.setMiniDrawer(v)
+      }
+    },
+    darkStyle() {
+      return this.dark
+        ? 'bg-dark text-white'
+        : 'bg-white text-dark';
+    },
+    menus() {
+      return [
+        {
+          label: `${this.dark ? 'Light' : 'Dark'}`,
+          icon: this.dark ? outlinedLightMode : outlinedDarkMode,
+          handler: (e) => {
+            this.setDarkMode(!this.dark);
+            this.$refs.rmenu.hide()
+          },
+        },
+      ];
+    },
+  },
+  methods: {
+    ...mapActions('layout', ['setDarkMode']),
+    ...mapMutations('layout', ['setMiniDrawer', 'setLeftDrawer']),
+    handleMenu() {
+      if (this.leftDrawer) {
+        this.leftDrawer = !this.miniDrawer;
+        this.miniDrawer = !this.miniDrawer;
+      } else {
+        this.leftDrawer = !this.leftDrawer;
+      }
+    },
+  }
 });
 </script>
 
