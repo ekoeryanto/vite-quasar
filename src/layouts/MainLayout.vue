@@ -15,7 +15,7 @@
         />
 
         <q-toolbar-title>
-          Quasar Vite
+          ViteJS - Quasar <sup>v{{ $q.version }}</sup>
         </q-toolbar-title>
 
         <q-btn
