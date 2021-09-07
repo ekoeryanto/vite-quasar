@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import ViteComponents from 'vite-plugin-components'
+import Components from 'unplugin-vue-components/vite'
 import { resolve } from 'path'
 import { Quasar } from 'quasar'
 import resolveQuasar from './scripts/resolver'
@@ -28,8 +28,29 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    ViteComponents({
-      customComponentResolvers: [resolveQuasar]
+    Components({
+      dts: true,
+      resolvers: [resolveQuasar]
     })
-  ]
+  ],
+  build: {
+    // terserOptions: {
+    //   compress: {
+    //     drop_console: true
+    //   }
+    // },
+    brotliSize: false,
+    chunkSizeWarningLimit: 1024,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('/node_modules/')) {
+            const modules = ['quasar', 'plyr']
+            const chunk = modules.find((module) => id.includes(`/node_modules/${module}`))
+            return chunk ? `vendor-${chunk}` : 'vendor'
+          }
+        }
+      }
+    }
+  }
 })
