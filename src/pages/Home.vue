@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { useQuasar } from '@/quasar'
+import { useQuasar } from 'src/quasar'
 import { onMounted } from 'vue'
 
 onMounted(() => {
@@ -14,8 +14,8 @@ onMounted(() => {
 
   $q.notify({
     position: 'top-left',
-    type: 'negative',
-    message: 'This is a "positive" type notification.'
+    type: 'warning',
+    message: 'This is a "warning" type notification.'
   })
   console.log($q)
 })
